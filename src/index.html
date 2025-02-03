@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta http-equiv="Content-Security-Policy">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 80px;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+        .menu-icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sidebar-item {
+            margin: 5px 0; /* Margem reduzida para deixar os ícones mais próximos */
+            cursor: pointer;
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+        .sidebar-item:hover {
+            background-color: #34495e;
+        }
+        .icon {
+            width: 30px;
+            height: 30px;
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #34495e;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .sidebar-item:hover .tooltip {
+            display: block;
+        }
+        #content {
+            flex-grow: 1;
+            background-color: #ecf0f1;
+            padding: 20px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centraliza os botões horizontalmente */
+            margin: 20px 0; /* Margem entre o contêiner e os outros itens */
+        }
+        .settings-btn, .logout-btn {
+            padding: 10px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: calc(100% - 20px); /* Mesma largura dos botões */
+            margin: 5px 0; /* Espaçamento entre os botões */
+            display: flex; /* Flex para centralizar o conteúdo do botão */
+            justify-content: center; /* Centraliza horizontalmente */
+        }
+        .settings-btn {
+            background-color: #3498db; /* Cor do botão de configurações */
+        }
+        .logout-btn {
+            background-color: #e74c3c; /* Cor do botão de logout */
+        }
+        .settings-btn:hover {
+            background-color: #2980b9; /* Cor ao passar o mouse */
+        }
+        .logout-btn:hover {
+            background-color: #c0392b; /* Cor ao passar o mouse */
+        }
+        /* Nova classe para ofuscar os ícones não selecionados */
+        .faded {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="menu-icons">
+            <div class="sidebar-item" id="whatsapp" title="WhatsApp">
+                <img src="assets/whatsapp.png" alt="WhatsApp" class="icon">
+            </div>
+            <div class="sidebar-item" id="facebook" title="Facebook">
+                <img src="assets/facebook.png" alt="Facebook" class="icon">
+            </div>
+            <div class="sidebar-item" id="instagram" title="Instagram">
+                <img src="assets/instagram.png" alt="Instagram" class="icon">
+            </div>
+            <div class="sidebar-item" id="telegram" title="Telegram">
+                <img src="assets/telegram.png" alt="Telegram" class="icon">
+            </div>
+            <div class="sidebar-item" id="discord" title="Discord">
+                <img src="assets/discord.png" alt="Discord" class="icon">
+            </div>
+            <div class="sidebar-item" id="slack" title="Slack">
+                <img src="assets/slack.png" alt="Slack" class="icon">
+            </div>
+            <div class="sidebar-item" id="linkedin" title="Linkedin">
+                <img src="assets/linkedin.png" alt="Linkedin" class="icon">
+            </div>
+        </div>
+        <div class="button-container">
+            <button class="settings-btn" id="config" title="Configurações">
+                <img src="assets/configuracoes.png" alt="Configurações" class="icon">
+            </button>
+            <button class="logout-btn" id="logout" title="Sair">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+    <div id="content"></div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                sidebarItems.forEach(i => {
+                    i.classList.add('faded');
+                });
+                item.classList.remove('faded');
+                const eventName = `show-${item.id}`;
+                ipcRenderer.send(eventName);
+            });
+        });
+
+        document.getElementById('config').addEventListener('click', () => {
+            ipcRenderer.send('show-link-registration');
+        });
+
+        document.getElementById('logout').addEventListener('click', () => {
+            const confirmLogout = confirm('Você tem certeza que deseja sair?');
+            if (confirmLogout) {
+                ipcRenderer.send('logout-success');
+            }
+        });
+    </script>
+</body>
+</html>
+
+ 

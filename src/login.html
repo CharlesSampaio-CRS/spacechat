@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ecf0f1;
+            font-family: Arial, sans-serif;
+        }
+        .login-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 100%; /* Largura total do contêiner */
+            max-width: 400px; /* Largura máxima do contêiner */
+            display: flex;
+            flex-direction: column; /* Alinha os elementos verticalmente */
+            align-items: center; /* Centraliza os itens horizontalmente */
+        }
+        h2 {
+            margin: 0 0 20px;
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            width: 100%; /* Largura total dos campos de entrada */
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .links {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .links a {
+            display: block;
+            margin-top: 5px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="btn">Entrar</button>
+        </form>
+        <div class="links">
+            <a href="#" id="registerLink">Registrar</a>
+            <a href="#" id="forgotPasswordLink">Esqueci a Senha</a>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        document.getElementById('loginForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Verifica se as credenciais estão corretas
+            if (username === 'admin' && password === 'admin') {
+                ipcRenderer.send('login-success'); // Envia o evento para abrir a janela principal
+            } else {
+                alert('Usuário ou senha incorretos');
+            }
+        });
+
+        document.getElementById('registerLink').addEventListener('click', (event) => {
+            event.preventDefault();
+            // Aqui você pode enviar um evento para abrir a tela de registro
+            ipcRenderer.send('show-register');
+        });
+
+        document.getElementById('forgotPasswordLink').addEventListener('click', (event) => {
+            event.preventDefault();
+            // Aqui você pode enviar um evento para abrir a tela de recuperação de senha
+            ipcRenderer.send('show-forgot-password');
+        });
+    </script>
+</body>
+</html>
+
+ 
